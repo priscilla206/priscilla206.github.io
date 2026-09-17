@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
-<title>Para você</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#000;overflow:hidden;height:100vh;width:100vw;touch-action:none}
-#stage{position:absolute;inset:0;background:#000}
-#world{position:absolute;left:50%;top:45%;width:1px;height:1px;will-change:transform}
-#stars{position:absolute;left:-150vw;top:-150vh;width:300vw;height:300vh}
-.star{position:absolute;background:#fff;border-radius:50%;animation:t 2s infinite}
-@keyframes t{0%,100%{opacity:.15}50%{opacity:1;box-shadow:0 0 6px #fff}}
-.shoot{position:absolute;width:120px;height:1px;background:linear-gradient(90deg,#fff,transparent);animation:shoot 4s infinite;opacity:0}
-@keyframes shoot{0%{transform:translate(-200px,-200px) rotate(-30deg);opacity:0}5%{opacity:1}20%{transform:translate(800px,500px) rotate(-30deg);opacity:0}100%{opacity:0}}
-#moon{position:absolute;left:50%;top:50%;width:82vw;max-width:480px;aspect-ratio:1/1;border-radius:50%;overflow:hidden;transform:translate(-50%,-50%);box-shadow:0 0 60px rgba(255,255,255,.2)}
-#moon img{width:100%;height:100%;object-fit:cover;display:block}
-#phrase{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:86%;color:#f2efe9;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.6;text-shadow:0 2px 15px #000}
+body{margin:0;background:#000;overflow:hidden;height:100vh;width:100vw}
+#estrelas{position:fixed;inset:0}
+.e{position:absolute;background:#fff;border-radius:50%;animation:p 3s infinite}
+@keyframes p{0%,100%{opacity:.2}50%{opacity:1;box-shadow:0 0 6px #fff}}
+#lua{position:fixed;left:50%;top:40%;width:85vw;max-width:450px;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden}
+#lua img{width:115%;height:115%;object-fit:cover;transform:translate(-6%,-6%)}
+#frase{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);width:85%;color:#f5f3f0;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.6}
+.cad{position:fixed;width:120px;height:1.5px;background:linear-gradient(to right,white,transparent);animation:c 3s linear infinite;opacity:0}
+@keyframes c{0%{transform:translate(-150px,0) rotate(-30deg);opacity:0}10%{opacity:1}100%{transform:translate(120vw,70vh) rotate(-30deg);opacity:0}}
 </style>
 </head>
 <body>
-<div id="stage">
-<div id="world">
-<div id="stars"></div>
-<div class="shoot" style="top:15%;left:10%;animation-delay:0s"></div>
-<div class="shoot" style="top:30%;left:20%;animation-delay:2.5s"></div>
-<div class="shoot" style="top:5%;left:40%;animation-delay:5s"></div>
-<div id="moon"><img src="IMG_3011.jpeg"></div>
-</div>
-<div id="phrase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
-</div>
+<div id="estrelas"></div>
+<div class="cad" style="top:18%"></div>
+<div class="cad" style="top:28%;animation-delay:1.2s"></div>
+<div class="cad" style="top:12%;animation-delay:2.7s"></div>
+<div id="lua"><img src="IMG_3011.jpeg"></div>
+<div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
 <script>
-const s=document.getElementById('stars');
-for(let i=0;i<600;i++){let d=document.createElement('div');d.className='star';d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';let z=Math.random()*2.5;if(Math.random()>0.8)z=3.5;d.style.width=z+'px';d.style.height=z+'px';d.style.animationDelay=Math.random()*4+'s';d.style.animationDuration=(1+Math.random()*3)+'s';s.appendChild(d)}
-const w=document.getElementById('world');let ry=0,rx=0,sc=1,ls=1,sx=0,sy=0,lry=0,lrx=0,id=0;function u(){w.style.transform=`rotateY(${ry}deg) rotateX(${rx}deg) scale(${sc})`}function gd(t){return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)}const st=document.getElementById('stage
+let es=document.getElementById('estrelas');
+for(let i=0;i<400;i++){let d=document.createElement('div');d.className='e';d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';let t=0.8+Math.random()*2.2;d.style.width=t+'px';d.style.height=t+'px';d.style.animationDelay=Math.random()*4+'s';es.appendChild(d)}
+let x=0,y=0,lx=0,ly=0,sx=0,sy=0,sc=1;
+let lua=document.getElementById('lua');
+function up(){es.style.transform=`translate(${x}px,${y}px) scale(${sc})`;lua.style.transform=`translate(-50%,-50%) translate(${x*0.3}px,${y*0.3}px) scale(${sc})`}
+addEventListener('touchstart',e=>{sx=e.touches[0].clientX-lx;sy=e.touches[0].clientY-ly},{passive:false});
+addEventListener('touchmove',e=>{e.preventDefault();lx=e.touches[0].clientX-sx;ly=e.touches[0].clientY-sy;x=lx;y=ly;up()},{passive:false});
+</script>
+</body>
+</html>
