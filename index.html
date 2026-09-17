@@ -5,45 +5,43 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#000;overflow:hidden}
-#ceu{position:fixed;inset:0;background:#000;touch-action:none}
-#mundo{position:fixed;left:50%;top:50%;width:0;height:0}
-#estrelas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
-.star{position:absolute;background:white;border-radius:50%}
-#lua{position:fixed;left:50%;top:42%;width:300px;height:300px;margin-left:-150px;margin-top:-150px;border-radius:50%;overflow:hidden;box-shadow:0 0 50px #fff5}
-#lua img{width:100%;height:100%;object-fit:cover}
-#frase{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6}
+body{margin:0;background:#000;overflow:hidden;height:100vh}
+#ceu{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a1a 0%,#000 70%)}
+.star{position:absolute;background:#fff;border-radius:50%;animation:pisca 2s infinite}
+@keyframes pisca{0%,100%{opacity:0.2}50%{opacity:1}}
+#lua{position:fixed;left:50%;top:43%;width:320px;height:320px;margin-left:-160px;margin-top:-160px;border-radius:50%;overflow:hidden;box-shadow:0 0 90px rgba(255,255,255,0.25),0 0 150px rgba(255,255,255,0.1);z-index:2}
+#lua img{width:100%;height:100%;object-fit:cover;display:block}
+#frase{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:88%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6;z-index:5}
 </style>
 </head>
 <body>
-<div id="ceu">
-  <div id="estrelas"></div>
-  <div id="lua"><img src="IMG_3011.jpeg"></div>
-  <div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
-</div>
+<div id="ceu" id="estrelas"></div>
+<div id="lua"><img src="IMG_3011.jpeg"></div>
+<div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
+
 <script>
-// cria 2000 estrelas - VAI APARECER MESMO SEM ARRASTAR
-var c=document.getElementById('estrelas');
-for(var i=0;i<2000;i++){
-  var d=document.createElement('div');
-  d.className='star';
-  d.style.left=Math.random()*100+'%';
-  d.style.top=Math.random()*100+'%';
-  d.style.width=(Math.random()*2+0.5)+'px';
-  d.style.height=d.style.width;
-  d.style.opacity=Math.random()*0.8+0.2;
-  c.appendChild(d);
-}
-// GIRA LUA + ESTRELAS JUNTAS
 var ceu=document.getElementById('ceu');
-var startX=0, startY=0, curX=0, curY=0;
-ceu.addEventListener('touchstart',function(e){startX=e.touches[0].clientX-curX; startY=e.touches[0].clientY-curY;});
-ceu.addEventListener('touchmove',function(e){
+for(var i=0;i<2500;i++){
+  var s=document.createElement('div');
+  s.className='star';
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*100+'%';
+  var t=Math.random()*2.5+0.3;
+  s.style.width=t+'px';
+  s.style.height=t+'px';
+  s.style.animationDelay=(Math.random()*3)+'s';
+  s.style.animationDuration=(1+Math.random()*3)+'s';
+  ceu.appendChild(s);
+}
+// giro suave lua + estrelas juntas
+var curX=0,curY=0,startX=0,startY=0;
+var lua=document.getElementById('lua');
+ceu.addEventListener('touchstart',e=>{startX=e.touches[0].clientX-curX;startY=e.touches[0].clientY-curY},{passive:true});
+ceu.addEventListener('touchmove',e=>{
   curX=e.touches[0].clientX-startX;
   curY=e.touches[0].clientY-startY;
-  var rx=curX*0.2, ry=curY*0.15;
-  c.style.transform='translate('+curX*0.2+'px,'+curY*0.2+'px) rotateY('+rx+'deg) rotateX('+ry+'deg)';
-  document.getElementById('lua').style.transform='translate('+curX*0.5+'px,'+curY*0.5+'px) rotateY('+rx+'deg) rotateX('+ry+'deg)';
+  ceu.style.transform='translate('+curX*0.05+'px,'+curY*0.05+'px)';
+  lua.style.transform='translate('+curX*0.15+'px,'+curY*0.15+'px)';
 },{passive:false});
 </script>
 </body>
