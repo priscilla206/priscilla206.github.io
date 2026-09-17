@@ -1,53 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>my-stargazing.github.io</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Priscilla</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;overflow:hidden;background:#020814; overscroll-behavior:none}
-  body{font-family:'Inter',sans-serif; touch-action:none; user-select:none}
-  
-  #world{position:absolute; inset:-30%; will-change:transform}
-  
-  canvas#stars{position:absolute; inset:0; width:100%; height:100%}
-  
-  #moon-wrap{
-    position:absolute; left:50%; top:50%; width: clamp(280px, 42vw, 460px); aspect-ratio:1;
-    transform:translate(-50%,-50%);
-    border-radius:50%;
-    background: #0a0a0a;
-    overflow:hidden;
-  }
-  #moon-img{
-    width:100%; height:100%; display:block;
-    object-fit:cover; border-radius:50%;
-    filter: brightness(1.05) contrast(1.08);
-  }
-
-  .header, .footer{position:fixed; left:0; right:0; z-index:20; display:flex; justify-content:space-between; padding:20px 28px; color:#7e8598; font-size:11px; letter-spacing:0.12em; pointer-events:none}
-  .header{top:0} .footer{bottom:0; font-size:9px; color:#4f5668}
-
-  .caption{
-    position:fixed; bottom:11%; left:50%; transform:translateX(-50%);
-    width:92%; max-width:700px; text-align:center; z-index:20; pointer-events:none
-  }
-  .caption p{
-    font-family:'Crimson Pro', serif; font-style:italic; font-weight:300;
-    color:#e9e9ee; font-size: clamp(15px, 1.9vw, 19px); line-height:1.7;
-    text-shadow:0 1px 20px rgba(0,0,0,1)
-  }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+body { background:#000; font-family:-apple-system, BlinkMacSystemFont, sans-serif; overflow:hidden; height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; }
+.card {
+  width:100%; max-width:390px; height:100vh; max-height:844px;
+  background:#fff; position:relative; overflow:hidden;
+  touch-action:none; user-select:none;
+}
+.card img {
+  width:100%; height:100%; object-fit:cover;
+  pointer-events:none;
+}
+.hint {
+  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,0.6); color:#fff; padding:8px 16px;
+  border-radius:20px; font-size:13px; letter-spacing:0.5px;
+  backdrop-filter: blur(10px);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:0.7 } 50% { opacity:1 } }
 </style>
 </head>
 <body>
-<div id="world">
-  <canvas id="stars"></canvas>
-  <div id="moon-wrap">
-    <img id="moon-img" src="https://images.unsplash.com/photo-1522030299830-16b8d3d04971?q=80&w=800&auto=format&fit=crop" alt="lua">
-  </div>
+<div class="card" id="card">
+  <img src="https://picsum.photos/seed/priscilla/800/1200" id="photo">
+  <div class="hint" id="hint">arraste com o dedo →</div>
 </div>
+<script>
+const card = document.getElementById('card');
+const photo = document.getElementById('photo');
+const hint = document.getElementById('hint');
+let startX = 0, currentX = 0, isDragging = false;
 
-<div class="header"><div>◍ my-stargazing.github.io</div><div>Home • About • Contact</div></div>
-<div class="caption"><p>Eu achava que a lua era linda, que
+function onStart(e){
+  isDragging = true;
+  startX = e.touches? e.touches[0].clientX : e.clientX;
+  hint.style.display = 'none';
+  card.style.transition = 'none';
+}
+function onMove(e){
+  if(!isDragging) return;
+  currentX = (e.touches? e.touches[0].clientX : e.clientX) - startX;
+  const rotate = currentX * 0.08;
+  photo.style.transform = `translateX(${currentX}px) rotate(${rotate}deg) scale(${1 - Math.abs(currentX)/2000})`;
+}
+function onEnd(){
+  if(!isDragging) return;
+  isDragging = false;
+  card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+  if(Math.abs(currentX) > 100){
+    photo.style.transform = `translateX(${currentX > 0? 1000 : -1000}px) rotate(${currentX > 0? 30 : -30}deg)`;
+    setTimeout(()=>{
+      photo.style.transition='none';
+      photo.style.transform='translateX(0) rotate(0)';
+      currentX=0;
+    },400);
+  } else {
+    photo.style.transform = 'translateX(0) rotate(0) scale(1)';
+  }
+  currentX = 0;
+}
+card.addEventListener('touchstart', onStart);
+card.addEventListener('touchmove', onMove);
+card.addEventListener('touchend', onEnd);
+card.addEventListener('mousedown', onStart);
+window.addEventListener('mousemove', onMove);
+window.addEventListener('mouseup', onEnd);
+</script>
+</body>
+</html>
