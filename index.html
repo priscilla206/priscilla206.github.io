@@ -24,4 +24,29 @@ body{background:#000;overflow:hidden;height:100vh;width:100vw;font-family:Georgi
 <div id="stage">
   <div id="stars"></div>
   <div class="cloud" style="width:450px;height:220px;left:5%;top:42%"></div>
-  <div class
+  <div class="cloud" style="width:600px;height:300px;left:35%;top:48%;animation-delay:-6s"></div>
+  <div class="cloud" style="width:350px;height:200px;left:60%;top:38%;animation-delay:-11s"></div>
+  <div id="moonWrap"><div id="moon"><img src="IMG_3011.jpeg"></div></div>
+  <div id="phrase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
+  <div id="hint">2 DEDOS ZOOM • 1 DEDO ARRASTAR</div>
+</div>
+<script>
+const stars=document.getElementById('stars');
+for(let i=0;i<80;i++){let s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';stars.appendChild(s)}
+const wrap=document.getElementById('moonWrap');
+let scale=1,lastScale=1,posX=0,posY=0,lastX=0,lastY=0,startX=0,startY=0,initialDist=0;
+function getDist(t){return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)}
+function update(){wrap.style.transform=`translate(-50%,-50%) translate(${posX}px,${posY}px) scale(${scale})`}
+const stage=document.getElementById('stage');
+stage.addEventListener('touchstart',e=>{
+  if(e.touches.length==1){startX=e.touches[0].clientX-lastX;startY=e.touches[0].clientY-lastY}
+  if(e.touches.length==2){initialDist=getDist(e.touches);lastScale=scale}
+},{passive:false});
+stage.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length==1){lastX=e.touches[0].clientX-startX;lastY=e.touches[0].clientY-startY;posX=lastX;posY=lastY;update()}
+  if(e.touches.length==2){let d=getDist(e.touches);scale=Math.min(Math.max(0.6,lastScale*(d/initialDist)),4);update()}
+},{passive:false});
+</script>
+</body>
+</html>
