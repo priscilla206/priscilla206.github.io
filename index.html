@@ -5,58 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#000;overflow:hidden;height:100vh;width:100vw}
-#ceu{position:fixed;inset:0;background:#000;overflow:hidden}
-#estrelas{position:fixed;left:-50%;top:-50%;width:200%;height:200%}
-.star{position:absolute;background:white;border-radius:50%}
-#lua{position:fixed;left:50%;top:42%;width:80vw;max-width:380px;aspect-ratio:1/1;border-radius:50%;overflow:hidden;transform:translate(-50%,-50%);background:#000}
-#lua img{width:100%;height:100%;object-fit:cover;display:block}
-.shoot{position:fixed;top:0;left:0;width:180px;height:2px;background:linear-gradient(90deg,#fff,transparent);animation:fall 3s linear infinite}
-@keyframes fall{
-  0%{transform:translate(-10vw,-10vh) rotate(-30deg);opacity:0}
-  10%{opacity:1}
-  100%{transform:translate(110vw,110vh) rotate(-30deg);opacity:0}
-}
-#frase{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:88%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6;z-index:10}
-</style>
-</head>
-<body>
-<div id="ceu">
-  <div id="estrelas"></div>
-  <div class="shoot" style="animation-delay:0s"></div>
-  <div class="shoot" style="animation-delay:1s;top:15%"></div>
-  <div class="shoot" style="animation-delay:2s;top:5%"></div>
-  <div id="lua"><img src="IMG_3011.jpeg"></div>
-  <div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
-</div>
-<script>
-let e=document.getElementById('estrelas');
-for(let i=0;i<1200;i++){
-  let d=document.createElement('div');
-  d.className='star';
-  d.style.left=Math.random()*100+'%';
-  d.style.top=Math.random()*100+'%';
-  let s=Math.random()*2.2;
-  d.style.width=s+'px';
-  d.style.height=s+'px';
-  d.style.opacity=0.2+Math.random()*0.8;
-  e.appendChild(d);
-}
-// GIRO 360 JUNTO
-let x=0,y=0,rx=0,ry=0,sx=0,sy=0,sc=1;
-let lua=document.getElementById('lua');
-function upd(){
-  e.style.transform=`translate(${x}px,${y}px) rotateY(${rx}deg) rotateX(${ry}deg) scale(${sc})`;
-  lua.style.transform=`translate(-50%,-50%) translate(${x*0.5}px,${y*0.5}px) rotateY(${rx}deg) rotateX(${ry}deg) scale(${sc})`;
-}
-document.addEventListener('touchstart',ev=>{sx=ev.touches[0].clientX-x;sy=ev.touches[0].clientY-y},{passive:true});
-document.addEventListener('touchmove',ev=>{
-  x=ev.touches[0].clientX-sx;
-  y=ev.touches[0].clientY-sy;
-  rx=x*0.3;
-  ry=y*0.2;
-  upd();
-},{passive:false});
-</script>
-</body>
-</html>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;height:100vh;width:100vw;touch-action:none}
+#stage{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a14 0%,#000 80%);touch-action:none;perspective:1000px}
+#world{position:absolute;left:50%;top:45%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
+#stars{position:absolute;left:-150vmax;top:-150vmax;width:300vmax;height:300vmax;transform-style:preserve-3d;pointer-events:none}
+.star{position:absolute;background:#fff;border-radius:50%;box-shadow:0 0 4px #fff}
+#lua{position:absolute;left:50%;top:50%;width:82vw;max-width:400px;height:82vw;max-height:400px;transform:translate3d(-50%,-50%,0);border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(255,255,255,0.15), inset 0 0 30px rgba(0,0,0,0.8)}
+#lua img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+#frase{position:fixed;bottom:35
