@@ -1,51 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#000;overflow:hidden;height:100vh}
-#stage{position:fixed;inset:0;background:#000;touch-action:none}
-canvas{position:fixed;inset:0;width:100%;height:100%}
-#lua{position:fixed;left:50%;top:45%;width:75vw;max-width:360px;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(255,255,255,.2)}
+body{margin:0;background:#000;overflow:hidden}
+#ceu{position:fixed;inset:0;background:#000;touch-action:none}
+#mundo{position:fixed;left:50%;top:50%;width:0;height:0}
+#estrelas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.star{position:absolute;background:white;border-radius:50%}
+#lua{position:fixed;left:50%;top:42%;width:300px;height:300px;margin-left:-150px;margin-top:-150px;border-radius:50%;overflow:hidden;box-shadow:0 0 50px #fff5}
 #lua img{width:100%;height:100%;object-fit:cover}
-#frase{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.6;z-index:5}
+#frase{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6}
 </style>
 </head>
 <body>
-<div id="stage">
-<canvas id="c"></canvas>
-<div id="lua"><img src="IMG_3011.jpeg"></div>
-<div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
+<div id="ceu">
+  <div id="estrelas"></div>
+  <div id="lua"><img src="IMG_3011.jpeg"></div>
+  <div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
 </div>
 <script>
-const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
-let w,h,stars=[];
-function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight}
-window.onresize=resize; resize();
-for(let i=0;i<3000;i++){stars.push({x:(Math.random()-0.5)*3000, y:(Math.random()-0.5)*3000, z:Math.random()*2000})}
-let rx=0,ry=0,sx=0,sy=0,lx=0,ly=0;
-function draw(){
- ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
- for(let s of stars){
-  let X=s.x, Y=s.y, Z=s.z;
-  // rotacao 3D
-  let cosY=Math.cos(ry), sinY=Math.sin(ry), cosX=Math.cos(rx), sinX=Math.sin(rx);
-  let x1 = X*cosY - Z*sinY;
-  let z1 = X*sinY + Z*cosY;
-  let y1 = Y*cosX - z1*sinX;
-  let z2 = Y*sinX + z1*cosX;
-  if(z2<=0) continue;
-  let k = 600 / z2;
-  let px = x1*k + w/2;
-  let py = y1*k + h/2;
-  if(px<0||px>w||py<0||py>h) continue;
-  let size = k*0.8;
-  ctx.fillStyle=`rgba(255,255,255,${Math.min(1, (2000-z2)/1000)})`;
-  ctx.beginPath(); ctx.arc(px,py,size,0,Math.PI*2); ctx.fill();
- }
- requestAnimationFrame(draw);
+// cria 2000 estrelas - VAI APARECER MESMO SEM ARRASTAR
+var c=document.getElementById('estrelas');
+for(var i=0;i<2000;i++){
+  var d=document.createElement('div');
+  d.className='star';
+  d.style.left=Math.random()*100+'%';
+  d.style.top=Math.random()*100+'%';
+  d.style.width=(Math.random()*2+0.5)+'px';
+  d.style.height=d.style.width;
+  d.style.opacity=Math.random()*0.8+0.2;
+  c.appendChild(d);
 }
-draw();
-const
+// GIRA LUA + ESTRELAS JUNTAS
+var ceu=document.getElementById('ceu');
+var startX=0, startY=0, curX=0, curY=0;
+ceu.addEventListener('touchstart',function(e){startX=e.touches[0].clientX-curX; startY=e.touches[0].clientY-curY;});
+ceu.addEventListener('touchmove',function(e){
+  curX=e.touches[0].clientX-startX;
+  curY=e.touches[0].clientY-startY;
+  var rx=curX*0.2, ry=curY*0.15;
+  c.style.transform='translate('+curX*0.2+'px,'+curY*0.2+'px) rotateY('+rx+'deg) rotateX('+ry+'deg)';
+  document.getElementById('lua').style.transform='translate('+curX*0.5+'px,'+curY*0.5+'px) rotateY('+rx+'deg) rotateX('+ry+'deg)';
+},{passive:false});
+</script>
+</body>
+</html>
