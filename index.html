@@ -1,30 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#000;overflow:hidden;height:100vh}
-#ceu{position:fixed;inset:0;background:#000}
-#estrelas{position:fixed;inset:0}
-.star{position:absolute;background:#fff;border-radius:50%}
-#lua{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);width:75vw;max-width:380px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 60px rgba(255,255,255,0.25)}
-#lua img{width:100%;height:100%;object-fit:cover;display:block}
-#frase{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6}
+#stage{position:fixed;inset:0;background:#000;touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#lua{position:fixed;left:50%;top:45%;width:75vw;max-width:360px;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(255,255,255,.2)}
+#lua img{width:100%;height:100%;object-fit:cover}
+#frase{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.6;z-index:5}
 </style>
 </head>
 <body>
-<div id="ceu">
-<div id="estrelas"></div>
-<div id="lua"><img src="IMG_3011.jpeg" onerror="this.style.display='none';document.getElementById('lua').style.background='radial-gradient(circle at 30% 30%,#fff,#ddd,#888,#222)'"></div>
+<div id="stage">
+<canvas id="c"></canvas>
+<div id="lua"><img src="IMG_3011.jpeg"></div>
 <div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
 </div>
 <script>
-let c=document.getElementById('estrelas');
-for(let i=0;i<1500;i++){
- let d=document.createElement('div');
- d.className='star';
- d.style.left=Math.random()*100+'%';
- d.style.top=Math.random()*100+'%';
- let s=Math.random
+const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+let w,h,stars=[];
+function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight}
+window.onresize=resize; resize();
+for(let i=0;i<3000;i++){stars.push({x:(Math.random()-0.5)*3000, y:(Math.random()-0.5)*3000, z:Math.random()*2000})}
+let rx=0,ry=0,sx=0,sy=0,lx=0,ly=0;
+function draw(){
+ ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+ for(let s of stars){
+  let X=s.x, Y=s.y, Z=s.z;
+  // rotacao 3D
+  let cosY=Math.cos(ry), sinY=Math.sin(ry), cosX=Math.cos(rx), sinX=Math.sin(rx);
+  let x1 = X*cosY - Z*sinY;
+  let z1 = X*sinY + Z*cosY;
+  let y1 = Y*cosX - z1*sinX;
+  let z2 = Y*sinX + z1*cosX;
+  if(z2<=0) continue;
+  let k = 600 / z2;
+  let px = x1*k + w/2;
+  let py = y1*k + h/2;
+  if(px<0||px>w||py<0||py>h) continue;
+  let size = k*0.8;
+  ctx.fillStyle=`rgba(255,255,255,${Math.min(1, (2000-z2)/1000)})`;
+  ctx.beginPath(); ctx.arc(px,py,size,0,Math.PI*2); ctx.fill();
+ }
+ requestAnimationFrame(draw);
+}
+draw();
+const
