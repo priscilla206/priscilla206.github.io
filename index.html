@@ -3,34 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Priscilla</title>
+<title>Priscilla - Moon</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#000;font-family:-apple-system,BlinkMacSystemFont,sans-serif;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
-.card{width:100%;max-width:390px;height:100vh;max-height:844px;background:#000;position:relative;overflow:hidden;touch-action:none;user-select:none}
-.card img{width:100%;height:100%;object-fit:cover;pointer-events:none;will-change:transform}
-.hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;letter-spacing:0.5px;backdrop-filter:blur(10px)}
+body{background:#000;overflow:hidden;height:100vh;width:100vh;width:100vw;font-family:'Georgia',serif}
+.sky{position:absolute;inset:0;background:#000}
+.moon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:92vw;max-width:500px;aspect-ratio:1/1;border-radius:50%;overflow:hidden}
+.moon img{width:100%;height:100%;object-fit:cover;display:block}
+.stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 2.5s infinite ease-in-out}
+@keyframes twinkle{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:1;transform:scale(1.8);box-shadow:0 0 6px #fff}}
+.phrase{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);color:#fff;text-align:center;z-index:10;width:85%;font-size:18px;line-height:1.5;letter-spacing:0.5px;text-shadow:0 2px 10px rgba(0,0,0,0.8);opacity:0;animation:fadeIn 2s 1s forwards}
+@keyframes fadeIn{to{opacity:1}}
+.card-container{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;touch-action:none}
+.card{width:88vw;max-width:360px;height:72vh;max-height:600px;background:transparent;border-radius:0;position:relative;touch-action:none;user-select:none;will-change:transform}
+.hint{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.6);font-size:13px;letter-spacing:1px;font-family:-apple-system,sans-serif}
 </style>
 </head>
 <body>
-<div class="card" id="card">
-  <img src="IMG_3011.jpeg" id="photo">
-  <div class="hint" id="hint">arraste com o dedo →</div>
+<div class="sky">
+  <div class="stars" id="stars"></div>
+  <div class="moon"><img src="IMG_3011.jpeg" id="moonImg"></div>
+  <div class="phrase">Você é a minha lua nas noites mais escuras 🌙</div>
+</div>
+<div class="card-container" id="container">
+  <div class="card" id="card"><div class="hint" id="hint">arraste para explorar →</div></div>
 </div>
 <script>
+const starsContainer=document.getElementById('stars');
+for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3)+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';starsContainer.appendChild(s)}
+const container=document.getElementById('container');
 const card=document.getElementById('card');
-const photo=document.getElementById('photo');
+const moon=document.querySelector('.moon');
 const hint=document.getElementById('hint');
-let startX=0,currentX=0,isDragging=false;
-function onStart(e){isDragging=true;startX=e.touches?e.touches[0].clientX:e.clientX;hint.style.display='none';photo.style.transition='none'}
-function onMove(e){if(!isDragging)return;currentX=(e.touches?e.touches[0].clientX:e.clientX)-startX;const rotate=currentX*0.08;photo.style.transform=`translateX(${currentX}px) rotate(${rotate}deg) scale(${1-Math.abs(currentX)/2000})`}
-function onEnd(){if(!isDragging)return;isDragging=false;photo.style.transition='transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275)';if(Math.abs(currentX)>100){photo.style.transform=`translateX(${currentX>0?1000:-1000}px) rotate(${currentX>0?30:-30}deg)`;setTimeout(()=>{photo.style.transition='none';photo.style.transform='translateX(0) rotate(0)';currentX=0},400)}else{photo.style.transform='translateX(0) rotate(0) scale(1)'}currentX=0}
-card.addEventListener('touchstart',onStart,{passive:false});
-card.addEventListener('touchmove',onMove,{passive:false});
-card.addEventListener('touchend',onEnd);
-card.addEventListener('mousedown',onStart);
-window.addEventListener('mousemove',onMove);
-window.addEventListener('mouseup',onEnd);
+let startX=0,startY=0,currentX=0,currentY=0,isDragging=false;
+function start(e){isDragging=true;startX=e.touches?e.touches[0].clientX:e.clientX;startY=e.touches?e.touches[0].clientY:e.clientY;hint.style.opacity='0';moon.style.transition='none'}
+function move(e){if(!isDragging)return;e.preventDefault();let x=e.touches?e.touches[0].clientX:e.clientX;let y=e.touches?e.touches[0].clientY:e.clientY;currentX=x-startX;currentY=y-startY;const rotY=currentX*0.1;const rotX=currentY*-0.05;moon.style.transform=`translate(-50%,-50%) translate(${currentX*0.15}px,${currentY*0.15}px) rotateY(${rotY}deg) rotateX(${rotX}deg) scale(${1+Math.abs(currentX)/3000})`}
+function end(){isDragging=false;moon.style.transition='transform 0.8s cubic-bezier(0.23,1,0.32,1)';moon.style.transform='translate(-50%,-50%) translate(0,0) rotateY(0) rotateX(0) scale(1)';setTimeout(()=>{hint.style.opacity='1'},1000);currentX=0;currentY=0}
+container.addEventListener('touchstart',start,{passive:false});
+container.addEventListener('touchmove',move,{passive:false});
+container.addEventListener('touchend',end);
+container.addEventListener('mousedown',start);
+window.addEventListener('mousemove',move);
+window.addEventListener('mouseup',end);
 </script>
 </body>
 </html>
