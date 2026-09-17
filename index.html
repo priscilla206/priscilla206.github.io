@@ -5,72 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Priscilla</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-body { background:#000; font-family:-apple-system, BlinkMacSystemFont, sans-serif; overflow:hidden; height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; }
-.card {
-  width:100%; max-width:390px; height:100vh; max-height:844px;
-  background:#fff; position:relative; overflow:hidden;
-  touch-action:none; user-select:none;
-}
-.card img {
-  width:100%; height:100%; object-fit:cover;
-  pointer-events:none;
-}
-.hint {
-  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
-  background:rgba(0,0,0,0.6); color:#fff; padding:8px 16px;
-  border-radius:20px; font-size:13px; letter-spacing:0.5px;
-  backdrop-filter: blur(10px);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100% { opacity:0.7 } 50% { opacity:1 } }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000;font-family:-apple-system,BlinkMacSystemFont,sans-serif;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
+.card{width:100%;max-width:390px;height:100vh;max-height:844px;background:#000;position:relative;overflow:hidden;touch-action:none;user-select:none}
+.card img{width:100%;height:100%;object-fit:cover;pointer-events:none;will-change:transform}
+.hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;letter-spacing:0.5px;backdrop-filter:blur(10px)}
 </style>
 </head>
 <body>
 <div class="card" id="card">
-  <img src="https://picsum.photos/seed/priscilla/800/1200" id="photo">
+  <img src="IMG_3011.jpeg" id="photo">
   <div class="hint" id="hint">arraste com o dedo →</div>
 </div>
 <script>
-const card = document.getElementById('card');
-const photo = document.getElementById('photo');
-const hint = document.getElementById('hint');
-let startX = 0, currentX = 0, isDragging = false;
-
-function onStart(e){
-  isDragging = true;
-  startX = e.touches? e.touches[0].clientX : e.clientX;
-  hint.style.display = 'none';
-  card.style.transition = 'none';
-}
-function onMove(e){
-  if(!isDragging) return;
-  currentX = (e.touches? e.touches[0].clientX : e.clientX) - startX;
-  const rotate = currentX * 0.08;
-  photo.style.transform = `translateX(${currentX}px) rotate(${rotate}deg) scale(${1 - Math.abs(currentX)/2000})`;
-}
-function onEnd(){
-  if(!isDragging) return;
-  isDragging = false;
-  card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-  if(Math.abs(currentX) > 100){
-    photo.style.transform = `translateX(${currentX > 0? 1000 : -1000}px) rotate(${currentX > 0? 30 : -30}deg)`;
-    setTimeout(()=>{
-      photo.style.transition='none';
-      photo.style.transform='translateX(0) rotate(0)';
-      currentX=0;
-    },400);
-  } else {
-    photo.style.transform = 'translateX(0) rotate(0) scale(1)';
-  }
-  currentX = 0;
-}
-card.addEventListener('touchstart', onStart);
-card.addEventListener('touchmove', onMove);
-card.addEventListener('touchend', onEnd);
-card.addEventListener('mousedown', onStart);
-window.addEventListener('mousemove', onMove);
-window.addEventListener('mouseup', onEnd);
+const card=document.getElementById('card');
+const photo=document.getElementById('photo');
+const hint=document.getElementById('hint');
+let startX=0,currentX=0,isDragging=false;
+function onStart(e){isDragging=true;startX=e.touches?e.touches[0].clientX:e.clientX;hint.style.display='none';photo.style.transition='none'}
+function onMove(e){if(!isDragging)return;currentX=(e.touches?e.touches[0].clientX:e.clientX)-startX;const rotate=currentX*0.08;photo.style.transform=`translateX(${currentX}px) rotate(${rotate}deg) scale(${1-Math.abs(currentX)/2000})`}
+function onEnd(){if(!isDragging)return;isDragging=false;photo.style.transition='transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275)';if(Math.abs(currentX)>100){photo.style.transform=`translateX(${currentX>0?1000:-1000}px) rotate(${currentX>0?30:-30}deg)`;setTimeout(()=>{photo.style.transition='none';photo.style.transform='translateX(0) rotate(0)';currentX=0},400)}else{photo.style.transform='translateX(0) rotate(0) scale(1)'}currentX=0}
+card.addEventListener('touchstart',onStart,{passive:false});
+card.addEventListener('touchmove',onMove,{passive:false});
+card.addEventListener('touchend',onEnd);
+card.addEventListener('mousedown',onStart);
+window.addEventListener('mousemove',onMove);
+window.addEventListener('mouseup',onEnd);
 </script>
 </body>
 </html>
