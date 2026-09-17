@@ -5,12 +5,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden;height:100vh;width:100vw;touch-action:none}
-#stage{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a14 0%,#000 80%);touch-action:none;perspective:1000px}
-#world{position:absolute;left:50%;top:45%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
-#stars{position:absolute;left:-150vmax;top:-150vmax;width:300vmax;height:300vmax;transform-style:preserve-3d;pointer-events:none}
-.star{position:absolute;background:#fff;border-radius:50%;box-shadow:0 0 4px #fff}
-#lua{position:absolute;left:50%;top:50%;width:82vw;max-width:400px;height:82vw;max-height:400px;transform:translate3d(-50%,-50%,0);border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(255,255,255,0.15), inset 0 0 30px rgba(0,0,0,0.8)}
-#lua img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
-#frase{position:fixed;bottom:35
+body{margin:0;background:#000;overflow:hidden;height:100vh}
+#ceu{position:fixed;inset:0;background:#000}
+#estrelas{position:fixed;inset:0}
+.star{position:absolute;background:#fff;border-radius:50%}
+#lua{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);width:75vw;max-width:380px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 60px rgba(255,255,255,0.25)}
+#lua img{width:100%;height:100%;object-fit:cover;display:block}
+#frase{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:85%;color:#fff;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="ceu">
+<div id="estrelas"></div>
+<div id="lua"><img src="IMG_3011.jpeg" onerror="this.style.display='none';document.getElementById('lua').style.background='radial-gradient(circle at 30% 30%,#fff,#ddd,#888,#222)'"></div>
+<div id="frase">Eu achava que a lua era linda, que as estrelas brilhavam e que o céu era infinito. Aí você chegou e eu entendi: eu só estava aprendendo a te enxergar em tudo.</div>
+</div>
+<script>
+let c=document.getElementById('estrelas');
+for(let i=0;i<1500;i++){
+ let d=document.createElement('div');
+ d.className='star';
+ d.style.left=Math.random()*100+'%';
+ d.style.top=Math.random()*100+'%';
+ let s=Math.random
